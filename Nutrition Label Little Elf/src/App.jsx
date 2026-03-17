@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 
-// 【導師筆記】這段程式碼就像是一間「已經裝潢好的樣品屋」
-// 裡面有：照片存放格、漂亮的牆壁、還有一個準備跟 AI 溝通的按鈕。
-
 function App() {
   // 1. 【秘密抽屜】用來放你拍的照片
   const [image, setImage] = useState(null);
