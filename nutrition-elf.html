@@ -107,7 +107,7 @@
                 </h3>
                 <button onclick="toggleApiModal(false)" class="text-gray-400 hover:text-white transition-colors">✕</button>
             </div>
-            <p class="text-gray-400 text-sm mb-6 leading-relaxed">若要使用 AI 解卦功能，請輸入您的 Google Gemini API Key。您的 Key 僅會儲存在瀏覽器中，不會傳送至其他伺服器。</p>
+            <p class="text-gray-400 text-sm mb-6 leading-relaxed">請輸入您的 Google Gemini API Key。您的 Key 僅會儲存在瀏覽器中，不會傳送至其他伺服器。</p>
             
             <div class="relative mb-8">
                 <input type="password" id="apiKeyInput" placeholder="貼上您的 API Key" 
@@ -128,7 +128,7 @@
 
         // --- API 管理區 (瀏覽器緩存) ---
         let API_KEY = localStorage.getItem('NUTRITION_ELF_KEY') || '';
-        const MODEL_NAME = 'gemini-1.5-flash'; 
+        const MODEL_NAME = 'gemini-3-flash-preview'; 
 
         function toggleApiModal(show) {
             const modal = document.getElementById('apiModal');
