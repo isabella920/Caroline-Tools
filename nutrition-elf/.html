@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>營養小精靈 Nutrition Elf</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #FDFBF7; } /* 米色背景，比較溫潤 */
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .emerald-gradient { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:flex md:items-center md:justify-center">
+
+    <div class="max-w-md w-full space-y-6">
+        <header class="text-center space-y-2">
+            <h1 class="text-3xl font-bold text-emerald-800 flex items-center justify-center gap-2">
+                <i data-lucide="sparkles" class="text-emerald-500"></i> 營養小精靈
+            </h1>
+            <p class="text-gray-500 text-sm">拍照上傳，讓小精靈翻譯成分表給妳聽</p>
+        </header>
+
+        <div id="dropzone" class="border-2 border-dashed border-emerald-300 rounded-2xl p-8 text-center glass-card hover:border-emerald-500 transition-all cursor-pointer">
+            <input type="file" id="fileInput" class="hidden" accept="image/*" multiple>
+            <div id="uploadPrompt">
+                <i data-lucide="camera" class="w-12 h-12 mx-auto text-emerald-400 mb-2"></i>
+                <p class="text-emerald-700 font-medium">點擊或拖放包裝照片</p>
+                <p class="text-xs text-gray-400 mt-1">支援多張照片同步分析</p>
+            </div>
+            <div id="previewContainer" class="flex flex-wrap gap-2 mt-4 hidden"></div>
+        </div>
+
+        <button id="analyzeBtn" class="w-full emerald-gradient text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-transform disabled:opacity-50">
+            開始 AI 智慧分析
+        </button>
+
+        <div id="loading" class="hidden text-center py-10">
+            <div class="animate-spin w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto"></div>
+            <p class="text-emerald-600 mt-4 font-medium animate-pulse">精靈正在讀取標籤中...</p>
+            <p class="text-xs text-gray-400">正在尋找隱藏的熱量地雷...</p>
+        </div>
+
+        <div id="resultCard" class="hidden space-y-4">
+            <div class="glass-card rounded-2xl p-6 shadow-xl border border-white">
+                <div class="flex justify-between items-start mb-4">
+                    <h2 id="prodName" class="text-xl font-bold text-gray-800">產品名稱</h2>
+                    <span id="verdictBadge" class="px-3 py-1 rounded-full text-xs font-bold text-white">評級</span>
+                </div>
+                
+                <p id="verdictText" class="text-gray-600 italic mb-6 border-l-4 border-emerald-400 pl-3">"精靈的一句話短評"</p>
+
+                <div id="highlights" class="grid grid-cols-2 gap-3 mb-6">
+                    </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-gray-700 flex items-center gap-2">
+                        <i data-lucide="languages" class="w-4 h-4"></i> 成分翻譯機
+                    </h3>
+                    <div id="translations" class="text-sm space-y-2 bg-white/50 p-3 rounded-lg"></div>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-gray-100 space-y-2">
+                    <p id="adviceTarget" class="text-sm font-bold text-emerald-700"></p>
+                    <p id="adviceWarning" class="text-sm text-red-500"></p>
+                </div>
+            </div>
+            
+            <button onclick="window.location.reload()" class="w-full text-gray-400 text-sm py-2">重新掃描下一個</button>
+        </div>
+    </div>
+
+    <script>
+        // 初始化圖示
+        lucide.createIcons();
+
+        // --- 核心升級區 ---
+		const MODEL_NAME = 'gemini-3.1-pro-preview'; // 這裡指定最強的 Pro 模型
+		const API_KEY = 'AIzaSyDhhDBvsFdQFGj2DmrdfiXFBBg5jFNYlCg'; 
+		const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
+		// -----------------
+
+        const fileInput = document.getElementById('fileInput');
+        const dropzone = document.getElementById('dropzone');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const previewContainer = document.getElementById('previewContainer');
+
+        // 點擊上傳邏輯
+        dropzone.onclick = () => fileInput.click();
+
+        fileInput.onchange = (e) => {
+            const files = Array.from(e.target.files);
+            previewContainer.innerHTML = '';
+            previewContainer.classList.remove('hidden');
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = "w-16 h-16 object-cover rounded-md shadow-sm border border-white";
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        // 核心分析邏輯
+        analyzeBtn.onclick = async () => {
+            const files = fileInput.files;
+            if (files.length === 0) return alert('請先上傳照片喔！');
+
+            // 顯示載入中
+            document.getElementById('loading').classList.remove('hidden');
+            analyzeBtn.classList.add('hidden');
+            dropzone.classList.add('hidden');
+
+            try {
+                // 將圖片轉換為 Base64
+                const imageParts = await Promise.all(
+                    Array.from(files).map(async (file) => {
+                        const base64 = await new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = () => resolve(reader.result.split(',')[1]);
+                            reader.readAsDataURL(file);
+                        });
+                        return { inlineData: { mimeType: file.type, data: base64 } };
+                    })
+                );
+
+                // --- 強化版分析指令 (內含人工色素與防腐劑偵測) ---
+				const prompt = `你是一位犀利且專業的營養小精靈，現在正在使用 Gemini Pro 高級模型。
+				請深度分析圖片中的成分表，特別注意「人工色素」、「防腐劑」、「甜味劑」及「反式脂肪」。
+
+				輸出格式請嚴格遵守 JSON，不要包含任何 Markdown：
+				{
+					"productName": "產品名稱",
+					"verdict": { "title": "給這份食品的一句話毒舌點評", "color": "green|yellow|red" },
+					"highlights": [
+				{ "label": "危險係數", "value": "0-10", "desc": "針對添加劑多寡給分", "type": "bad" },
+				{ "label": "核心熱量", "value": "XXX大卡", "desc": "高熱量地雷提醒", "type": "bad" }
+					],
+					"translations": [
+				{ "origin": "原本的化學成分名", "simplified": "白話名稱", "explain": "它對身體的潛在影響（例如：人工色素可能導致注意力不集中、某防腐劑對腸道負擔大等）" }
+				],
+				"advice": { 
+				"target": "誰絕對不能碰", 
+				"warning": "這東西裡最邪惡的成分是什麼", 
+				"action": "如果真的吃了，該怎麼補救（例如多喝水或運動）" 
+				}
+}
+嚴禁回覆 JSON 以外的文字。`;
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }, ...imageParts] }] })
+                });
+
+                const data = await response.json();
+
+                // 錯誤處理：檢查是否額度用完
+                if (data.error) {
+                    if (data.error.message.includes('quota')) {
+                        throw new Error('小精靈累壞了 (API 額度用完)，請明天再試，或換一個 Key！');
+                    }
+                    throw new Error(data.error.message);
+                }
+
+                const result = JSON.parse(data.candidates[0].content.parts[0].text);
+                renderResult(result);
+
+            } catch (error) {
+                alert('出錯了：' + error.message);
+                window.location.reload();
+            }
+        };
+
+        function renderResult(res) {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('resultCard').classList.remove('hidden');
+
+            document.getElementById('prodName').innerText = res.productName;
+            document.getElementById('verdictText').innerText = `"${res.verdict.title}"`;
+            
+            const badge = document.getElementById('verdictBadge');
+            const colors = { green: 'bg-emerald-500', yellow: 'bg-yellow-500', red: 'bg-red-500' };
+            badge.className = `px-3 py-1 rounded-full text-xs font-bold text-white ${colors[res.verdict.color]}`;
+            badge.innerText = res.verdict.color === 'green' ? '推薦吃' : (res.verdict.color === 'yellow' ? '適量吃' : '少吃點');
+
+            const highlightsHtml = res.highlights.map(h => `
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <p class="text-[10px] text-gray-400 uppercase font-bold">${h.label}</p>
+                    <p class="text-lg font-bold ${h.type === 'bad' ? 'text-orange-500' : 'text-emerald-600'}">${h.value}</p>
+                    <p class="text-[10px] text-gray-500">${h.desc}</p>
+                </div>
+            `).join('');
+            document.getElementById('highlights').innerHTML = highlightsHtml;
+
+            const transHtml = res.translations.map(t => `
+                <div class="flex items-start gap-2 border-b border-dashed border-gray-200 pb-2">
+                    <span class="text-xs font-mono bg-gray-100 px-1 text-gray-400 shrink-0">${t.origin}</span>
+                    <i data-lucide="arrow-right" class="w-3 h-3 mt-1 text-gray-300"></i>
+                    <div>
+                        <p class="font-bold text-emerald-600">${t.simplified}</p>
+                        <p class="text-[10px] text-gray-400">${t.explain}</p>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('translations').innerHTML = transHtml;
+
+            document.getElementById('adviceTarget').innerText = `✅ 適合：${res.advice.target}`;
+            document.getElementById('adviceWarning').innerText = `⚠️ 警告：${res.advice.warning}`;
+            
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
