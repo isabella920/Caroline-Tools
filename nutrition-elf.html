@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>營養小精靈 Nutrition Elf</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -217,53 +217,64 @@ Constraints:
         };
 
 function renderResult(res) {
+    // 1. 先把載入畫面藏起來，把結果顯示出來
     document.getElementById('loading').classList.add('hidden');
     document.getElementById('resultCard').classList.remove('hidden');
 
-    // 1. 產品名與評級
+    // 2. 【進化點 A】自動抓取你剛才上傳的第一張圖，顯示在左邊對照區
+    const firstImg = previewContainer.querySelector('img');
+    if (firstImg && document.getElementById('mainPreview')) {
+        document.getElementById('mainPreview').src = firstImg.src;
+    }
+
+    // 3. 填入產品名與評級
     document.getElementById('prodName').innerText = res.productName;
     document.getElementById('verdictText').innerText = `"${res.verdict.title}"`;
     
+    // 4. 處理評級標籤顏色
     const badge = document.getElementById('verdictBadge');
     const colors = { 
         green: 'bg-emerald-500', 
         yellow: 'bg-amber-500', 
         red: 'bg-red-500' 
     };
-    // 取得顏色名稱 (處理 green (安心吃) 這種字串)
     const colorKey = res.verdict.color.split(' ')[0].toLowerCase();
-    badge.className = `px-3 py-1 rounded-full text-xs font-bold text-white ${colors[colorKey] || 'bg-gray-500'}`;
+    badge.className = `px-5 py-2 rounded-full text-sm font-black text-white shadow-md ${colors[colorKey] || 'bg-gray-500'}`;
     badge.innerText = colorKey.toUpperCase();
 
-// 2. 亮點區 (修改點：加大字體與 padding)
+    // 5. 【進化點 B】亮點方塊：字體調大 (text-2xl)，增加層次感
     document.getElementById('highlights').innerHTML = res.highlights.map(h => `
-        <div class="bg-white/60 p-5 rounded-xl border border-white shadow-sm">
-            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider">${h.label}</p>
-            <p class="text-2xl font-black text-emerald-800 my-1">${h.value}</p>
-            <p class="text-sm text-gray-500">${h.desc}</p>
+        <div class="bg-white/70 p-5 rounded-2xl border border-white shadow-sm hover:shadow-md transition-shadow">
+            <p class="text-[12px] text-gray-400 font-bold uppercase tracking-widest">${h.label}</p>
+            <p class="text-2xl font-black text-emerald-900 my-1">${h.value}</p>
+            <p class="text-sm text-gray-500 leading-tight">${h.desc}</p>
         </div>
     `).join('');
 
-    // 3. 成分翻譯區 (修改點：加大翻譯內容的間距)
+    // 6. 【進化點 C】成分翻譯：字體暴力加大 (text-xl)，電腦版閱讀更輕鬆
     document.getElementById('translations').innerHTML = res.translations.map(t => `
-        <div class="border-b border-emerald-100 last:border-0 pb-3 mb-3">
-            <div class="flex items-center gap-3">
-                <span class="text-xs font-mono text-gray-400">${t.origin}</span>
-                <span class="text-lg font-bold text-gray-700">➜ ${t.simplified}</span>
+        <div class="border-b border-emerald-50 last:border-0 pb-4 mb-4">
+            <div class="flex flex-wrap items-center gap-3">
+                <span class="text-xs font-mono text-gray-400 bg-gray-50 px-2 py-0.5 rounded">${t.origin}</span>
+                <span class="text-xl font-bold text-gray-700">➜ ${t.simplified}</span>
             </div>
-            <p class="text-md text-emerald-600 mt-1 italic leading-snug">${t.impact}</p>
+            <p class="text-md text-emerald-600 mt-2 italic font-medium leading-relaxed">${t.impact}</p>
         </div>
     `).join('');
 
-    // 4. 建議區
+    // 7. 填入底部建議
     document.getElementById('adviceTarget').innerHTML = `💡 靈魂替代：${res.advice.craving_swap}`;
     document.getElementById('adviceWarning').innerHTML = `⚠️ 補救動作：${res.advice.action}`;
     
+    // 重新驅動 Lucide 圖示，確保新生成的圖示會亮起來
     lucide.createIcons();
+
+    // 貼心滾動：讓畫面自動滑到結果區，不用手動拉
+    document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
 }
     </script>
-    <div style="position: fixed; bottom: 5px; left: 10px; font-size: 10px; color: #cbd5e1; font-family: monospace; pointer-events: none; opacity: 0.5;">
-    v1.0.2
-</div>
+<div style="position: fixed; bottom: 10px; left: 10px; font-size: 10px; color: #94a3b8; font-family: monospace; pointer-events: none; z-index: 9999;">
+        v1.0.2
+    </div>
 </body>
 </html>
