@@ -206,43 +206,53 @@ Constraints:
             }
         };
 
-        function renderResult(res) {
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('resultCard').classList.remove('hidden');
+function render(res) {
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('resultArea').classList.remove('hidden');
 
-            document.getElementById('prodName').innerText = res.productName;
-            document.getElementById('verdictText').innerText = `"${res.verdict.title}"`;
-            
-            const badge = document.getElementById('verdictBadge');
-            const colors = { green: 'bg-emerald-500', yellow: 'bg-yellow-500', red: 'bg-red-500' };
-            badge.className = `px-3 py-1 rounded-full text-xs font-bold text-white ${colors[res.verdict.color]}`;
-            badge.innerText = res.verdict.color === 'green' ? '推薦吃' : (res.verdict.color === 'yellow' ? '適量吃' : '少吃點');
+    // 1. 標題與毒舌點評
+    document.getElementById('prodName').innerText = res.productName;
+    document.getElementById('verdict').innerText = `"${res.verdict.title}"`;
+    
+    const tag = document.getElementById('statusTag');
+    const colors = { green: 'bg-emerald-500', yellow: 'bg-amber-500', red: 'bg-red-500' };
+    tag.className = `px-3 py-1 rounded-full text-white text-[10px] font-black ${colors[res.verdict.color]}`;
+    tag.innerText = res.verdict.color.toUpperCase();
 
-            const highlightsHtml = res.highlights.map(h => `
-                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
-                    <p class="text-[10px] text-gray-400 uppercase font-bold">${h.label}</p>
-                    <p class="text-lg font-bold ${h.type === 'bad' ? 'text-orange-500' : 'text-emerald-600'}">${h.value}</p>
-                    <p class="text-[10px] text-gray-500">${h.desc}</p>
-                </div>
-            `).join('');
-            document.getElementById('highlights').innerHTML = highlightsHtml;
+    // 2. 邪惡係數與熱量地雷 (這裏加入了 desc 說明)
+    document.getElementById('stats').innerHTML = res.highlights.map(h => `
+        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+            <p class="text-[10px] text-slate-400 font-bold uppercase">${h.label}</p>
+            <p class="text-lg font-black text-slate-800">${h.value}</p>
+            <p class="text-[10px] text-slate-500 mt-1 italic">${h.desc}</p>
+        </div>
+    `).join('');
 
-            const transHtml = res.translations.map(t => `
-                <div class="flex items-start gap-2 border-b border-dashed border-gray-200 pb-2">
-                    <span class="text-xs font-mono bg-gray-100 px-1 text-gray-400 shrink-0">${t.origin}</span>
-                    <i data-lucide="arrow-right" class="w-3 h-3 mt-1 text-gray-300"></i>
-                    <div>
-                        <p class="font-bold text-emerald-600">${t.simplified}</p>
-                        <p class="text-[10px] text-gray-400">${t.explain}</p>
-                    </div>
-                </div>
-            `).join('');
-            document.getElementById('translations').innerHTML = transHtml;
+    // 3. 深度成分分析 (適配 impact 欄位)
+    document.getElementById('additiveList').innerHTML = res.translations.map(t => `
+        <div class="pb-3 border-b border-dashed border-slate-100 last:border-0 pt-2">
+            <div class="flex items-center gap-2">
+                <span class="text-[10px] bg-slate-100 px-1 text-slate-400 font-mono">${t.origin}</span>
+                <span class="font-bold text-slate-700 text-sm">👉 ${t.simplified}</span>
+            </div>
+            <p class="text-xs text-emerald-600 mt-1 leading-relaxed">💥 影響：${t.impact}</p>
+        </div>
+    `).join('');
 
-            document.getElementById('adviceTarget').innerText = `✅ 適合：${res.advice.target}`;
-            document.getElementById('adviceWarning').innerText = `⚠️ 警告：${res.advice.warning}`;
-            
-            lucide.createIcons();
-        }    </script>
+    // 4. 專家建議區 (加入補救與替代品)
+    document.getElementById('targetAdvice').innerHTML = `
+        <div class="space-y-2">
+            <p class="text-red-500"><strong>❗ 違背天良：</strong>${res.advice.warning}</p>
+            <p class="text-slate-700"><strong>🩹 墮落補救：</strong>${res.advice.action}</p>
+            <div class="mt-4 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                <p class="text-emerald-700 text-sm font-bold">💡 吃貨靈魂替代品：</p>
+                <p class="text-emerald-600 text-xs mt-1">${res.advice.craving_swap}</p>
+            </div>
+        </div>
+    `;
+    
+    lucide.createIcons();
+}
+    </script>
 </body>
 </html>
