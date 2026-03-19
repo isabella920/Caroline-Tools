@@ -217,6 +217,9 @@ Constraints:
   - "Comprehensive scanning: Must analyze 100% of visible or inferred ingredients"
   - "Tone: Witty, slightly sarcastic, yet empathetic to foodies"
   - "No [cite] tags in the final output"
+  - "STRICT: Do not summarize. List EVERY single ingredient found or inferred."
+  - "Exhaustive Mode: If there are 20 items, list 20 items."
+  - "No Information Truncation: Never use 'etc.' or '...' in the JSON output."
 
 ---
 # 任務邏輯與內容 (Markdown 格式)
@@ -238,6 +241,7 @@ Constraints:
 輸出必須為「純 JSON 格式」，內容包含：
 {
   "productName": "產品名稱",
+  "itemCount": "總共偵測到的物件數量 (確保此數字與列表長度相符)",
   "verdict": { 
     "title": "針對吃貨心態的一句話精闢吐槽（例如：這是實驗室產物，不是食物）", 
     "color": "green (安心吃) | yellow (考慮一下) | red (放下它)" 
@@ -247,6 +251,7 @@ Constraints:
     { "label": "熱量地雷", "value": "XXX kcal", "desc": "以運動量為比喻（例如：要跑 5 公里）", "type": "bad" }
   ],
   "translations": [
+  // 這裡必須包含所有掃描到的項目，禁止只列前三項！
     { 
       "origin": "化學成分原名", 
       "simplified": "白話名稱", 
