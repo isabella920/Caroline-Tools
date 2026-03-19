@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>色碼轉換器 Color Converter </title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%233b82f6%22/></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* --- 基礎變數與排版 --- */
+        :root {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --accent-color: #3b82f6;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --current-h: 0;
+            --current-s: 100%;
+            --current-v: 100%;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            height: 720px;
+            gap: 24px;
+        }
+
+        /* 面板設計 */
+        .panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .left-panel { flex: 1; border-right: 1px solid var(--border-color); }
+        .right-panel { flex: 1.2; }
+
+        /* 預覽大方塊 */
+        .preview-box {
+            margin: 20px;
+            height: 140px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.1s;
+            position: relative;
+        }
+        .preview-box:active { transform: scale(0.98); }
+        .preview-hex {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* 輸入區域樣式 */
+        .input-stack {
+            padding: 0 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; }
+        .input-wrapper {
+            display: flex;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .input-wrapper:focus-within { border-color: var(--accent-color); background: #fff; }
+        .input-field {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px 12px;
+            font-family: 'Inter', monospace;
+            font-size: 0.85rem;
+            outline: none;
+        }
+        .input-prefix {
+            padding: 10px;
+            background: #f1f5f9;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            border-right: 1px solid var(--border-color);
+			width: 60px;       
+			min-width: 60px;   
+            text-align: center;
+        }
+
+        /* 歷史紀錄珍珠點 */
+        .history-section-left {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+            background: #f8fafc;
+        }
+        .history-title { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; display: block; }
+        .history-bar { display: flex; flex-wrap: wrap; gap: 8px; }
+        .pearl {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .pearl:hover { transform: scale(1.15); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+
+        /* 配色建議區 */
+        .harmony-scroll { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 32px; }
+        .harmony-section { display: flex; flex-direction: column; gap: 12px; }
+        .harmony-title-text { font-size: 0.8rem; font-weight: 600; color: var(--text-main); }
+        .harmony-grid { display: flex; gap: 8px; }
+        .h-block {
+            flex: 1;
+            height: 64px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .h-block:hover { transform: translateY(-3px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .h-block.center { border: none; z-index: 1; }
+        .h-label {
+            position: absolute;
+            bottom: 6px; left: 6px;
+            font-size: 0.8rem;
+            font-family: 'Inter',monospace;
+			font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+        }
+
+        /* 色輪彈窗核心樣式 (採用 HSV 模型) */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center; justify-content: center;
+            z-index: 100;
+        }
+        .overlay.active { display: flex; }
+        .color-picker-card {
+            background: white;
+            width: 400px;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+        }
+        .sl-map {
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
+            position: relative;
+            /* HSV 色塊背景：底層為色相，上層為飽和度白漸變與亮度黑漸變 */
+            background: linear-gradient(to top, #000, transparent), 
+                        linear-gradient(to right, #fff, transparent);
+            background-color: hsl(var(--current-h), 100%, 50%);
+            cursor: crosshair;
+            margin-bottom: 16px;
+        }
+        .sl-pointer {
+            width: 14px; height: 14px;
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 3px rgba(0,0,0,0.5);
+            position: absolute;
+            transform: translate(-50%, -50%); 
+            pointer-events: none;
+            top: 0; left: 0;
+            z-index: 10;
+        }
+        .hue-slider-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .hue-slider {
+            flex: 1; -webkit-appearance: none; height: 12px; border-radius: 6px;
+            background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+        }
+        .hue-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: white; border-radius: 50%; border: 2px solid #ddd; cursor: pointer; }
+
+        .picker-inputs {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; padding: 12px; background: #f8fafc; border-radius: 8px;
+        }
+        .mini-input { display: flex; flex-direction: column; gap: 4px; }
+        .mini-input label { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); }
+        .mini-input input { border: 1px solid var(--border-color); padding: 6px; border-radius: 4px; font-size: 0.75rem; font-family: monospace; outline: none; }
+
+        .picker-footer { display: flex; justify-content: flex-end; gap: 10px; }
+        .btn { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border-color); background: white; cursor: pointer; font-size: 0.8rem; }
+        .btn-primary { background: var(--text-main); color: white; border: none; }
+
+        .toast { position: fixed; top: 20px; background: #333; color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.75rem; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000; }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+    <a href="https://isabella920.github.io/Caroline-Tools/" 
+       class="fixed top-4 left-4 z-[9999] w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all shadow-sm bg-white/50 backdrop-blur-sm border border-white"
+       title="←">
+        <i data-lucide="arrow-left" class="w-6 h-6"></i>
+    </a> 
+
+    <div class="app-container">
+        <!-- 左面板：主控室 -->
+        <div class="panel left-panel">
+            <div class="panel-header">轉換控制</div>
+            
+            <div class="preview-box" id="mainCanvas">
+                <span class="preview-hex" id="mainHexText">#FF0000</span>
+            </div>
+
+            <div class="input-stack">
+                <div class="input-group">
+                    <div class="input-label">HEX</div>
+                    <div class="input-wrapper"><span class="input-prefix">#</span><input type="text" class="input-field" id="inHex"></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">RGB</div>
+                    <div class="input-wrapper"><span class="input-prefix">RGB</span><input type="text" class="input-field" id="inRgb"></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">HSL</div>
+                    <div class="input-wrapper"><span class="input-prefix">HSL</span><input type="text" class="input-field" id="inHsl"></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">HSV</div>
+                    <div class="input-wrapper"><span class="input-prefix">HSV</span><input type="text" class="input-field" id="inHsv"></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">CMYK</div>
+                    <div class="input-wrapper"><span class="input-prefix">CMYK</span><input type="text" class="input-field" id="inCmyk"></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Tailwind</div>
+                    <div class="input-wrapper"><span class="input-prefix">TW</span><input type="text" class="input-field" id="inTw"></div>
+                </div>
+            </div>
+
+            <!-- 歷史紀錄 -->
+            <div class="history-section-left">
+                <span class="history-title">最近使用的顏色</span>
+                <div class="history-bar" id="historyBar"></div>
+            </div>
+        </div>
+
+        <!-- 右面板：實驗室 -->
+        <div class="panel right-panel">
+            <div class="panel-header">配色建議</div>
+            <div class="harmony-scroll" id="harmonyContent"></div>
+        </div>
+    </div>
+
+    <!-- 色輪彈窗 -->
+    <div class="overlay" id="pickerOverlay">
+        <div class="color-picker-card">
+            <div class="sl-map" id="slMap">
+                <div class="sl-pointer" id="slPointer"></div>
+            </div>
+            <div class="hue-slider-wrap">
+                <input type="range" class="hue-slider" id="hueRange" min="0" max="360" value="0">
+            </div>
+            <div class="picker-inputs">
+                <div class="mini-input"><label>HEX</label><input type="text" id="pickHex"></div>
+                <div class="mini-input"><label>RGB</label><input type="text" id="pickRgb"></div>
+                <div class="mini-input"><label>HSL</label><input type="text" id="pickHsl"></div>
+                <div class="mini-input"><label>CMYK</label><input type="text" id="pickCMYK"></div>
+            </div>
+            <div class="picker-footer">
+                <button class="btn btn-primary" id="closePicker">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">已複製到剪貼簿</div>
+
+    <script>
+        // --- 核心狀態管理 (改用 HSV) ---
+        let state = { h: 0, s: 100, v: 100, history: [] };
+
+        const tailwindColors = [
+            {n:'slate', h:'#64748b'}, {n:'gray', h:'#6b7280'}, {n:'zinc', h:'#71717a'},
+            {n:'red', h:'#ef4444'}, {n:'orange', h:'#f97316'}, {n:'amber', h:'#f59e0b'},
+            {n:'yellow', h:'#eab308'}, {n:'lime', h:'#84cc16'}, {n:'green', h:'#22c55e'},
+            {n:'emerald', h:'#10b981'}, {n:'teal', h:'#14b8a6'}, {n:'cyan', h:'#06b6d4'},
+            {n:'sky', h:'#0ea5e9'}, {n:'blue', h:'#3b82f6'}, {n:'indigo', h:'#6366f1'},
+            {n:'violet', h:'#8b5cf6'}, {n:'purple', h:'#a855f7'}, {n:'fuchsia', h:'#d946ef'},
+            {n:'pink', h:'#ec4899'}, {n:'rose', h:'#f43f5e'}
+        ];
+
+        // --- 核心轉換函數 ---
+     
+	 // HSV 轉 HSL 的橋樑
+function hsvToHsl(h, s, v) {
+    s /= 100; v /= 100;
+    let l = v * (1 - s / 2);
+    let sl = (l === 0 || l === 1) ? 0 : (v - l) / Math.min(l, 1 - l);
+    return [h, Math.round(sl * 100), Math.round(l * 100)];
+}
+
+// HSL 直接轉 HEX
+function hslToHex(h, s, l) {
+    s /= 100; l /= 100;
+    const k = n => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    const rgb = [Math.round(255 * f(0)), Math.round(255 * f(8)), Math.round(255 * f(4))];
+    return rgbToHex(...rgb);
+}
+	 
+        // HSV to RGB (用於繪製與輸出)
+        function hsvToRgb(h, s, v) {
+            s /= 100; v /= 100;
+            let r, g, b;
+            let i = Math.floor(h / 60);
+            let f = h / 60 - i;
+            let p = v * (1 - s);
+            let q = v * (1 - f * s);
+            let t = v * (1 - (1 - f) * s);
+            switch (i % 6) {
+                case 0: r = v, g = t, b = p; break;
+                case 1: r = q, g = v, b = p; break;
+                case 2: r = p, g = v, b = t; break;
+                case 3: r = p, g = q, b = v; break;
+                case 4: r = t, g = p, b = v; break;
+                case 5: r = v, g = p, b = q; break;
+            }
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
+
+        // RGB to HSV (用於輸入同步)
+        function rgbToHsv(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, v = max;
+            let d = max - min;
+            s = max === 0 ? 0 : d / max;
+            if (max === min) h = 0;
+            else {
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [Math.round(h * 360), Math.round(s * 100), Math.round(v * 100)];
+        }
+
+        // RGB to HSL (用於顯示 HSL 數值)
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            if (max === min) h = s = 0;
+            else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+        }
+
+        function rgbToHex(r, g, b) { return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase(); }
+        
+        function hexToRgb(hex) {
+            let c = hex.replace('#', '');
+            if(c.length === 3) c = c.split('').map(x => x+x).join('');
+            const n = parseInt(c, 16);
+            return isNaN(n) ? [0,0,0] : [n >> 16, (n >> 8) & 255, n & 255];
+        }
+
+        function rgbToCmyk(r, g, b) {
+            let c = 1 - (r / 255), m = 1 - (g / 255), y = 1 - (b / 255), k = Math.min(c, m, y);
+            if (k === 1) return [0, 0, 0, 100];
+            return [Math.round((c-k)/(1-k)*100), Math.round((m-k)/(1-k)*100), Math.round((y-k)/(1-k)*100), Math.round(k*100)];
+        }
+
+        function getClosestTailwind(r, g, b) {
+            let min = Infinity, best = "blue-500";
+            tailwindColors.forEach(c => {
+                const trgb = hexToRgb(c.h);
+                const d = Math.sqrt((r-trgb[0])**2 + (g-trgb[1])**2 + (b-trgb[2])**2);
+                if(d < min) { min = d; best = `${c.n}-500`; }
+            });
+            return best;
+        }
+
+        // --- UI 更新 ---
+        function updateUI(source) {
+            const rgb = hsvToRgb(state.h, state.s, state.v);
+            const hex = rgbToHex(...rgb);
+            const hsl = rgbToHsl(...rgb);
+            const cmyk = rgbToCmyk(...rgb);
+            const tw = getClosestTailwind(...rgb);
+
+            // 更新 CSS 變數控制色輪背景
+            document.documentElement.style.setProperty('--current-h', state.h);
+
+            const canvas = document.getElementById('mainCanvas');
+            canvas.style.backgroundColor = hex;
+            document.getElementById('mainHexText').innerText = hex;
+
+            // 左側輸入同步
+            if(source !== 'inHex') document.getElementById('inHex').value = hex.replace('#','');
+            if(source !== 'inRgb') document.getElementById('inRgb').value = rgb.join(', ');
+            if(source !== 'inHsl') document.getElementById('inHsl').value = `${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%`;
+			if(source !== 'inHsv') document.getElementById('inHsv').value =`${Math.round(state.h)}, ${Math.round(state.s)}%, ${Math.round(state.v)}%`;
+            if(source !== 'inCmyk') document.getElementById('inCmyk').value = cmyk.join(', ');
+            if(source !== 'inTw') document.getElementById('inTw').value = tw;
+
+            // 彈窗取色點位置 (S 為 X, V 為 Y)
+            const pointer = document.getElementById('slPointer');
+            pointer.style.left = state.s + '%';
+            pointer.style.top = (100 - state.v) + '%';
+            document.getElementById('hueRange').value = state.h;
+
+            // 彈窗輸入同步
+            if(source !== 'pickHex') document.getElementById('pickHex').value = hex.replace('#','');
+            if(source !== 'pickRgb') document.getElementById('pickRgb').value = rgb.join(', ');
+            if(source !== 'pickHsl') document.getElementById('pickHsl').value = `${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%`;
+            if(source !== 'pickCMYK') document.getElementById('pickCMYK').value = cmyk;
+
+            renderHarmonies();
+        }
+
+        function renderHarmonies() {
+            const container = document.getElementById('harmonyContent');
+            container.innerHTML = '';
+            
+            const schemes = [
+                { title: '互補色 (Complementary)', steps: [0, 180] },
+                { title: '類比色 (Analogous)', steps: [-30, 0, 30] },
+                { title: '三等分 (Triadic)', steps: [0, 120, 240] },
+                { title: '分割補色 (Split-Complementary)', steps: [0, 150, 210] },
+                { title: '單色亮階 (Monochromatic)', steps: [-30, -15, 0, 15, 30], type: 'lightness' }
+            ];
+
+
+            schemes.forEach(s => {
+                const sec = document.createElement('div');
+                sec.className = 'harmony-section';
+                sec.innerHTML = `<div class="harmony-title-text">${s.title}</div>`;
+                const grid = document.createElement('div');
+                grid.className = 'harmony-grid';
+
+s.steps.forEach(step => {
+    let nh = state.h, ns = state.s, nv = state.v;
+    let bHex;
+
+    // 關鍵修正：如果是要算「單色深淺」
+    if(s.type === 'value' || s.type === 'lightness') {
+        // 1. 先把目前的 HSV 轉成 HSL，因為 HSL 的亮度(L)才支援從黑到白
+        let [hh, ss, ll] = hsvToHsl(state.h, state.s, state.v);
+        
+        // 2. 在 HSL 的空間裡調整「亮度」
+        // step 為負會變深(#660000)，為正會變淺/粉紅(#FF9999)
+        let nl = Math.max(0, Math.min(100, ll + step));
+        
+        // 3. 直接用 HSL 算出 HEX，這樣最準，不會卡死在 #FF0000
+        bHex = hslToHex(hh, ss, nl);
+    } else {
+        // 正常的配色方案（互補、類比）：旋轉色相
+        nh = (state.h + step + 360) % 360;
+        bHex = rgbToHex(...hsvToRgb(nh, ns, nv));
+    }
+
+    // --- 渲染方塊 (保持原本的代碼) ---
+    const box = document.createElement('div');
+    box.className = `h-block ${step === 0 ? 'center' : ''}`;
+    box.style.backgroundColor = bHex;
+    box.innerHTML = `<span class="h-label">${bHex}</span>`;
+    box.onclick = () => { 
+        // 點擊色階時，將其轉回 HSV 存入 state，維持色輪運作
+        const rgb = hexToRgb(bHex);
+        const [h, s, v] = rgbToHsv(...rgb);
+        state.h = h; state.s = s; state.v = v;
+        updateUI(); 
+		addHistory(bHex);
+    };
+    grid.appendChild(box);
+});
+                sec.appendChild(grid);
+                container.appendChild(sec);
+            });
+        }
+
+        // --- 交互邏輯 ---
+        const slMap = document.getElementById('slMap');
+        let isDragging = false;
+
+        function handleSL(e) {
+            const rect = slMap.getBoundingClientRect();
+            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+            
+            // 邊界校正：確保 x, y 在容器內
+            let x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+            let y = Math.max(0, Math.min(rect.height, clientY - rect.top));
+            
+            // HSV 映射：S 橫軸 0-100, V 縱軸 100-0
+            state.s = Math.round((x / rect.width) * 100);
+            state.v = Math.round(100 - (y / rect.height) * 100);
+            
+            updateUI('picker');
+        }
+
+        slMap.onmousedown = (e) => { isDragging = true; handleSL(e); };
+        window.onmousemove = (e) => { if(isDragging) handleSL(e); };
+        window.onmouseup = () => { isDragging = false; };
+
+        slMap.addEventListener('touchstart', (e) => { isDragging = true; handleSL(e); e.preventDefault(); }, {passive: false});
+        window.addEventListener('touchmove', (e) => { if(isDragging) handleSL(e); }, {passive: false});
+        window.addEventListener('touchend', () => { isDragging = false; });
+
+        document.getElementById('hueRange').oninput = (e) => {
+            state.h = parseInt(e.target.value);
+            updateUI('picker');
+        };
+
+        // 彈窗輸入聯動
+        const pickInputs = ['pickHex', 'pickRgb', 'pickHsl', 'pickCMYK'];
+        pickInputs.forEach(id => {
+            document.getElementById(id).oninput = function() {
+                let hsv;
+                if(id === 'pickHex') hsv = rgbToHsv(...hexToRgb(this.value));
+                else if(id === 'pickRgb') {
+                    const p = this.value.split(',').map(n => parseInt(n.trim()));
+                    if(p.length === 3) hsv = rgbToHsv(...p);
+                }
+                else if(id === 'pickHsl') {
+                    // HSL 需轉回 RGB 再轉 HSV
+                    const p = this.value.replace(/%/g, '').split(',').map(n => parseInt(n.trim()));
+                    if(p.length === 3) {
+                        const h=p[0], s=p[1]/100, l=p[2]/100;
+                        const a = s * Math.min(l, 1 - l);
+                        const f = n => l - a * Math.max(-1, Math.min((n + h / 30) % 12 - 3, Math.min(9 - (n + h / 30) % 12, 1)));
+                        hsv = rgbToHsv(Math.round(255*f(0)), Math.round(255*f(8)), Math.round(255*f(4)));
+                    }
+                }
+                if(hsv) { [state.h, state.s, state.v] = hsv; updateUI(id); }
+            };
+        });
+
+        document.getElementById('mainCanvas').onclick = () => {
+            document.getElementById('pickerOverlay').classList.add('active');
+        };
+        document.getElementById('closePicker').onclick = () => {
+            document.getElementById('pickerOverlay').classList.remove('active');
+            addHistory(rgbToHex(...hsvToRgb(state.h, state.s, state.v)));
+        };
+
+        // --- 歷史紀錄 ---
+function addHistory(hex) {
+    if (!hex) return;
+    
+    // 1. 統一轉成大寫並加上 # 號，確保比對基礎一致
+    let cleanHex = hex.toUpperCase();
+    if (!cleanHex.startsWith('#')) cleanHex = '#' + cleanHex;
+
+    // 2. 檢查是否與「目前最新（第一顆）」的顏色重複
+    // 如果點擊同一個顏色，或算出來的 HEX 沒變，就直接攔截
+    if (state.history.length > 0 && state.history[0] === cleanHex) {
+        return; 
+    }
+
+    // 3. 如果歷史紀錄中其他位置有這個顏色，先把它移除（搬移到最前面的邏輯）
+    const index = state.history.indexOf(cleanHex);
+    if (index > -1) {
+        state.history.splice(index, 1);
+    }
+
+    // 4. 加入最前面並限制數量
+    state.history.unshift(cleanHex);
+    if (state.history.length > 14) state.history.pop();
+
+    renderHistory();
+}
+
+function renderHistory() {
+    const bar = document.getElementById('historyBar');
+    if (!bar) return;
+    bar.innerHTML = '';
+    state.history.forEach(h => {
+        const p = document.createElement('div');
+        p.className = 'pearl';
+        p.style.backgroundColor = h;
+        p.title = h;
+        // 點擊珍珠點回填顏色
+        p.onclick = () => {
+            const rgb = hexToRgb(h);
+            const [h_new, s_new, v_new] = rgbToHsv(...rgb);
+            state.h = h_new; state.s = s_new; state.v = v_new;
+            updateUI('history'); // 標記來源為 history 避免迴圈
+        };
+        bar.appendChild(p);
+    });
+}
+
+        const inputs = ['inHex', 'inRgb', 'inHsl','inHsv', 'inCmyk', 'inTw'];
+        inputs.forEach(id => {
+            document.getElementById(id).onclick = function() {
+                this.select();
+                document.execCommand('copy');
+                const t = document.getElementById('toast');
+                t.classList.add('show');
+                setTimeout(()=>t.classList.remove('show'), 1500);
+                if(id === 'inHex') addHistory('#' + this.value);
+            };
+        });
+
+        updateUI();
+		lucide.createIcons();
+    </script>
+	    <div style="position: fixed; bottom: 10px; right: 10px; font-size: 10px; color: #94a3b8; font-family: monospace; pointer-events: none; z-index: 9999;">
+        v1.0
+    </div>
+</body>
+</html>
