@@ -218,8 +218,10 @@ Constraints:
   - "Tone: Witty, slightly sarcastic, yet empathetic to foodies"
   - "No [cite] tags in the final output"
   - "STRICT: Do not summarize. List EVERY single ingredient found or inferred."
-  - "Exhaustive Mode: If there are 20 items, list 20 items."
+  - "Exhaustive Mode: If there are 50 items, list 50 items."
   - "No Information Truncation: Never use 'etc.' or '...' in the JSON output."
+  - "Parenthetical_Priority: If an ingredient has sub-items in parentheses (e.g., 'A(B, C)'), you MUST ignore 'A' and analyze ONLY 'B' and 'C'."
+  - "Atomic_Extraction: Treat contents inside parentheses as the primary targets for analysis; bypass the outer general category name."
 
 ---
 # 任務邏輯與內容 (Markdown 格式)
@@ -231,6 +233,7 @@ Constraints:
 ## 2. 核心行動 (Act)
 - 請深度掃描圖片中的所有文字資訊。若圖片為「成分表/營養標示」，請執行窮舉式分析
 - 若僅為「食物外觀」而無標籤，請根據食材組成推論可能的隱藏添加物。
+- 成分項目若有括弧補充，僅分析括弧內項目
 
 ### 掃描重點：
 * **化學雷區**：人工色素、人工香料、各類防腐劑、增稠劑。
@@ -336,7 +339,7 @@ Constraints:
     </script>
 
     <div style="position: fixed; bottom: 10px; right: 10px; font-size: 10px; color: #94a3b8; font-family: monospace; pointer-events: none; z-index: 9999;">
-        v1.2
+        v1.3
     </div>
 </body>
 </html>
