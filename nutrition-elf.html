@@ -7,6 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2310b981%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2%22></path><path d=%22M7 2v20%22></path><path d=%22M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7%22></path></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body { background-color: #FDFBF7; } 
         .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
@@ -91,6 +92,9 @@
                             </div>
                         </div>
                     </div>
+                    <button id="downloadBtn" onclick="downloadImage()" class="w-full emerald-gradient text-white text-xl font-bold py-5 mt-4 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all flex justify-center items-center gap-3">
+                        <i data-lucide="image-down" class="w-6 h-6"></i> 下載分析圖卡分享
+                    </button>
                     <button onclick="window.location.reload()" class="w-full text-gray-400 text-sm font-mono py-6 rounded-xl transition-all duration-300 tracking-widest uppercase hover:bg-gray-100 hover:text-emerald-600 group">
                         <span class="opacity-70 group-hover:opacity-100">重新掃描下一個</span>
                     </button>
@@ -336,10 +340,54 @@ Constraints:
             lucide.createIcons();
             document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
         }
+
+        // 【新增】一鍵截圖並下載的魔法函式
+        async function downloadImage() {
+            const btn = document.getElementById('downloadBtn');
+            const originalContent = btn.innerHTML;
+            
+            // 讓按鈕顯示轉圈圈，告知使用者正在處理
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> 正在沖洗圖卡...`;
+            lucide.createIcons();
+
+            // 抓取整個包含分析結果的右側玻璃卡片
+            const target = document.querySelector('.w-full.md\\:w-2\\/3 .glass-card');
+            const scrollArea = target.querySelector('.custom-scrollbar');
+            
+            // 魔法步驟：暫時把「捲軸」限制拿掉，讓超長的成分表可以一次完整截圖！
+            const originalMaxHeight = scrollArea.style.maxHeight;
+            const originalOverflow = scrollArea.style.overflowY;
+            scrollArea.style.maxHeight = 'none';
+            scrollArea.style.overflowY = 'visible';
+
+            try {
+                // 呼叫攝影師拍照，設定背景色避免透明變成黑色，設定 scale=2 讓畫質變超清晰
+                const canvas = await html2canvas(target, {
+                    backgroundColor: '#FDFBF7',
+                    scale: 2,
+                    useCORS: true
+                });
+
+                // 把照片變成 PNG 檔案並觸發下載
+                const link = document.createElement('a');
+                link.download = `營養小精靈_分析結果.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (err) {
+                alert('截圖好像遇到一點干擾，請再試一次！');
+            } finally {
+                // 魔法步驟：把捲軸設定悄悄恢復原狀
+                scrollArea.style.maxHeight = originalMaxHeight;
+                scrollArea.style.overflowY = originalOverflow;
+                // 恢復按鈕原本的樣子
+                btn.innerHTML = originalContent;
+                lucide.createIcons();
+            }
+        }
     </script>
 
     <div style="position: fixed; bottom: 10px; right: 10px; font-size: 10px; color: #94a3b8; font-family: monospace; pointer-events: none; z-index: 9999;">
-        v1.3
+        v1.4
     </div>
 </body>
 </html>
