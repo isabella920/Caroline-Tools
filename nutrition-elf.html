@@ -76,8 +76,7 @@
                         <div class="max-h-[65vh] md:max-h-[75vh] overflow-y-auto pr-2 space-y-6 custom-scrollbar">
                             <div class="flex justify-between items-center mb-6">
                                 <h2 id="prodName" class="text-3xl font-black text-gray-800">產品名稱</h2>
-                                <span id="verdictBadge" class="inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-black text-white shadow-md leading-none">評級</span>
-                            </div>
+<span id="verdictBadge" class="flex h-8 items-center justify-center px-5 rounded-full text-sm font-black text-white shadow-md leading-none">評級</span>                            </div>
                             <p id="verdictText" class="text-xl text-gray-600 italic mb-8 border-l-4 border-emerald-400 pl-4 py-2">"精靈短評"</p>
                             <div id="highlights" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                             <div class="space-y-4">
@@ -313,8 +312,7 @@ Constraints:
             const badge = document.getElementById('verdictBadge');
             const colors = { green: 'bg-emerald-500', yellow: 'bg-amber-500', red: 'bg-red-500' };
             const colorKey = res.verdict.color.split(' ')[0].toLowerCase();
-badge.className = `inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-black text-white shadow-md leading-none ${colors[colorKey] || 'bg-gray-500'}`;            badge.innerText = colorKey.toUpperCase();
-
+badge.className = `flex h-8 items-center justify-center px-5 rounded-full text-sm font-black text-white shadow-md leading-none ${colors[colorKey] || 'bg-gray-500'}`;
             document.getElementById('highlights').innerHTML = res.highlights.map(h => `
                 <div class="bg-white/70 p-5 rounded-2xl border border-white shadow-sm hover:shadow-md transition-shadow">
                     <p class="text-[12px] text-gray-400 font-bold uppercase tracking-widest">${h.label}</p>
