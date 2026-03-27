@@ -6,81 +6,24 @@
     <title>可蘿嵐的小箱箱</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { 
-            background: radial-gradient(circle at top right, #e2e8f0, #f8fafc); 
-            min-h-screen: 100vh;
-        }
-        .tool-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        .tool-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-            background: rgba(255, 255, 255, 0.9);
-            border-color: #757575;
-        }
-    </style>
+    <link rel="stylesheet" href="src/assets/style.css">
 </head>
 <body class="flex flex-col items-center py-12 px-6">
-
     <header class="text-center mb-16">
-        <div class="inline-block p-3 bg-white rounded-2xl shadow-sm mb-4">
+        <div id="secret-trigger" class="inline-block p-3 bg-white rounded-2xl shadow-sm mb-4 cursor-pointer">
             <i data-lucide="layout-grid" class="w-8 h-8 text-emerald-500"></i>
         </div>
         <h1 class="text-4xl font-black text-slate-800 tracking-tight mb-2">可蘿嵐的小箱箱</h1>
         <p class="text-slate-500">點擊下方卡片，分享給你好用小工具</p>
     </header>
 
-    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl w-full">
-        
-        <a href="nutrition-elf.html" class="tool-card p-6 rounded-3xl flex flex-col items-start gap-4">
-            <div class="p-3 bg-emerald-100 rounded-2xl text-emerald-600">
-                <i data-lucide="utensils" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h2 class="text-xl font-bold text-slate-800">營養小精靈</h2>
-                <p class="text-sm text-slate-500 mt-1">深度掃描成分標籤，揪出隱藏添加劑與防腐劑。</p>
-            </div>
-            <div class="mt-auto flex items-center text-xs font-bold text-emerald-600 uppercase tracking-widest">
-                立即開啟 <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
-            </div>
-        </a>
-         <a href="color-converter.html" class="tool-card p-6 rounded-3xl flex flex-col items-start gap-4">
-            <div class="p-3 bg-gray-100 rounded-2xl text-gray-600">
-                <i data-lucide="paint-bucket" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h2 class="text-xl font-bold text-slate-800">色碼轉換器</h2>
-                <p class="text-sm text-slate-500 mt-1">解決色碼轉換時的繁瑣步驟，並提供實用的配色建議</p>
-            </div>
-            <div class="mt-auto flex items-center text-xs font-bold text-gray-600 uppercase tracking-widest">
-                立即開啟 <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
-            </div>
-			</a>
-
-        <div class="tool-card p-6 rounded-3xl flex flex-col items-start gap-4 opacity-60 border-dashed border-2 border-slate-200">
-            <div class="p-3 bg-slate-100 rounded-2xl text-slate-400">
-                <i data-lucide="plus" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h2 class="text-xl font-bold text-slate-400">即將推出...</h2>
-                <p class="text-sm text-slate-400 mt-1">新工具正在醞釀中，敬請期待。</p>
-            </div>
-        </div>
-
+    <main id="tool-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl w-full">
     </main>
 
     <footer class="mt-20 text-slate-400 text-sm">
         <p>© 2026 AI ToolBox Lab. Built with Vibe Coding.</p>
     </footer>
 
-    <script>
-        // 初始化小圖示
-        lucide.createIcons();
-    </script>
+    <script type="module" src="src/main.js"></script>
 </body>
 </html>
