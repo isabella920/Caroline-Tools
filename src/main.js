@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let secretCounter = 0; // 如果 handleSecretClick 沒幫你算，這裡自己算也可以
         
         secretTrigger.addEventListener('click', () => {
-            // 這裡假設你的 handleSecretClick 會判斷是否點滿 5 下
+            // 這裡假設你的 handleSecretClick 會判斷是否正確使用暗號
             const isTriggered = handleSecretClick(Date.now());
             
             if (isTriggered) {
