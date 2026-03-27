@@ -27,6 +27,7 @@ export function showAdminPanel() {
                         <option value="rose">紅色</option>
                         <option value="amber">橘色</option>
                         <option value="purple">紫色</option>
+                        <option value="gray">灰色</option>
                     </select>
                 </div>
                 
