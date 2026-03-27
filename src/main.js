@@ -6,7 +6,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- 【動態讀取開始】 ---
     try {
         // 去抓你剛剛辛苦寫入的那個檔案 (加個時間戳防止瀏覽器快取舊資料)
-        const response = await fetch(`./data/tools.json?t=${Date.now()}`);
+        const response = await fetch(`./data/tools.json?nocache=${new Date().getTime()}`, {
+    cache: "no-store" // 告訴瀏覽器不要存這份資料
+});
         if (!response.ok) throw new Error("找不到資料庫");
         
         const cloudData = await response.json();
