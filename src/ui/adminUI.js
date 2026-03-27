@@ -1,27 +1,3 @@
-收到！既然我們要直衝 GitHub API 自動化模式，這段代碼就不能只是「複製文字」，而是要變成「發射火箭」。
-
-我們要將原本的 alert("代碼已複製") 替換成呼叫 GitHub API 的指令。
-
-【大圖景觀看】
-現在這個表單不再是「印表機」（印出代碼讓你貼），它變成了**「遙控器」**。
-當你按下按鈕，它會把表單裡的內容打包成一個 JSON 小方塊，直接丟給 githubService，讓它去敲 GitHub 的門並把資料塞進去。
-
-【流程導圖：自動化傳輸線】
-程式碼片段
-graph TD
-    A[Admin 表單輸入] --> B{按下「確認新增」}
-    B --> C[封裝為 JSON 物件]
-    C --> D[呼叫 githubService.addCardToGithub]
-    D --> E[GitHub API 寫入 data/tools.json]
-    E --> F[成功訊息 + 自動重新整理]
-    
-    style B fill:#3b82f6,stroke:#1d4ed8,color:#fff
-    style E fill:#22c55e,stroke:#15803d,color:#fff
-【修正後的 adminUI.js 代碼】
-請將你的 src/ui/adminUI.js 修改為以下內容。
-注意： 我移除了「複製代碼」的廢功能，改成了非同步 (async/await) 的傳輸邏輯。
-
-JavaScript
 import { addCardToGithub } from '../services/githubService.js';
 
 export function showAdminPanel() {
