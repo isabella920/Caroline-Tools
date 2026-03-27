@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": "tool-1774628075282",
+    "name": "營養小精靈",
+    "description": "深度掃描成分標籤，揪出隱藏添加劑與防腐劑。",
+    "link": "https://isabella920.github.io/Caroline-Tools/nutrition-elf.html",
+    "icon": "utensils",
+    "colorTheme": "emerald",
+    "isReady": true
+  }
+]
