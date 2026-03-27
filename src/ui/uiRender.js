@@ -23,9 +23,21 @@ export function renderTools(tools, containerId) {
         </a>
     `).join('');
 
-    // 使用 insertAdjacentHTML 塞到「即將推出」的前面
-    container.insertAdjacentHTML('afterbegin', toolsHTML);
 
+    const comingSoonHTML = `
+        <div class="tool-card p-6 rounded-3xl flex flex-col items-start gap-4 opacity-60 border-dashed border-2 border-slate-200">
+            <div class="p-3 bg-slate-100 rounded-2xl text-slate-400">
+                <i data-lucide="plus" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-slate-400">即將推出...</h2>
+                <p class="text-sm text-slate-400 mt-1">新工具正在醞釀中，敬請期待。</p>
+            </div>
+        </div>
+    `;
+
+    // 3. 注入 HTML (這會覆蓋原本的內容)
+    container.innerHTML = toolsHTML + comingSoonHTML;
     // 重新驅動 Lucide (包含新加入的 chevron-right)
     if (window.lucide) {
         window.lucide.createIcons();
