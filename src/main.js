@@ -2,25 +2,4 @@ import { TOOL_DATA } from './constants/config.js';
 import { renderTools } from './ui/uiRender.js';
 import { handleSecretClick, verifyAdmin } from './services/authService.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. 渲染初始畫面
-    renderTools(TOOL_DATA, 'tool-grid');
-
-    // 2. 綁定隱密登入事件
-    const secretTrigger = document.getElementById('secret-trigger');
-    if (secretTrigger) {
-        secretTrigger.addEventListener('click', () => {
-            const isTriggered = handleSecretClick(Date.now());
-            
-            if (isTriggered) {
-                const pwd = prompt("🕵️ 進入隱密後台 (測試密碼: vibe2026):");
-                if (verifyAdmin(pwd)) {
-                    alert("登入成功！即將載入後台管理模組...");
-                    // 這裡可以跳轉至 admin.html 或動態加載後台組件
-                } else if (pwd !== null) {
-                    alert("密碼錯誤。");
-                }
-            }
-        });
-    }
-});
+function _0x19b8(_0x103a44,_0x4d2e41){_0x103a44=_0x103a44-0x1b1;var _0x4e2405=_0x4e24();var _0x19b8ca=_0x4e2405[_0x103a44];return _0x19b8ca;}var _0x5d75cb=_0x19b8;(function(_0x3b30c0,_0x5af733){var _0x3119aa=_0x19b8,_0x22fd1f=_0x3b30c0();while(!![]){try{var _0x1fabb6=parseInt(_0x3119aa(0x1b6))/0x1+parseInt(_0x3119aa(0x1b9))/0x2*(parseInt(_0x3119aa(0x1b3))/0x3)+parseInt(_0x3119aa(0x1bd))/0x4+parseInt(_0x3119aa(0x1ba))/0x5*(parseInt(_0x3119aa(0x1be))/0x6)+-parseInt(_0x3119aa(0x1b4))/0x7+-parseInt(_0x3119aa(0x1b8))/0x8*(-parseInt(_0x3119aa(0x1bb))/0x9)+-parseInt(_0x3119aa(0x1b2))/0xa;if(_0x1fabb6===_0x5af733)break;else _0x22fd1f['push'](_0x22fd1f['shift']());}catch(_0x455351){_0x22fd1f['push'](_0x22fd1f['shift']());}}}(_0x4e24,0x2ba0a),eval(function(_0x50204d,_0x1f8d11,_0x4cfeb2,_0x38442e,_0x53efcf,_0x5c11d6){var _0x181f8d=_0x19b8;_0x53efcf=function(_0x1ae45c){var _0x1d6ca=_0x19b8;return _0x1ae45c[_0x1d6ca(0x1b7)](_0x1f8d11);};if(!''[_0x181f8d(0x1b5)](/^/,String)){while(_0x4cfeb2--)_0x5c11d6[_0x53efcf(_0x4cfeb2)]=_0x38442e[_0x4cfeb2]||_0x53efcf(_0x4cfeb2);_0x38442e=[function(_0xbf1061){return _0x5c11d6[_0xbf1061];}],_0x53efcf=function(){var _0x221bb2=_0x181f8d;return _0x221bb2(0x1b1);},_0x4cfeb2=0x1;};while(_0x4cfeb2--)if(_0x38442e[_0x4cfeb2])_0x50204d=_0x50204d['replace'](new RegExp('\x5cb'+_0x53efcf(_0x4cfeb2)+'\x5cb','g'),_0x38442e[_0x4cfeb2]);return _0x50204d;}(_0x5d75cb(0x1bf),0x16,0x16,_0x5d75cb(0x1bc)['split']('|'),0x0,{})));function _0x4e24(){var _0x2a8cc7=['96424aVaopb','2QwKwom','10595QWkmdl','171khALbN','const|document|addEventListener|alert|DOMContentLoaded|renderTools|TOOL_DATA|tool|grid|getElementById|secret|trigger|click|handleSecretClick||Date|now|if|prompt|carolineforever|verifyAdmin|null','266692eACzVZ','498wfBrEI','1.2(\x224\x22,()=>{5(6,\x227-8\x22);0\x20e=1.9(\x22a-b\x22);e&&e.2(\x22c\x22,()=>{0\x20e=d(f.g());h(e){0\x20e=i(\x22🕵️\x20進入隱密後台\x20(測試密碼:\x20j):\x22);k(e)?3(\x22登入成功！即將載入後台管理模組...\x22):l!==e&&3(\x22密碼錯誤。\x22)}})});','\x5cw+','7349530QtGNbD','698679fsFRkw','407820DzZJqy','replace','267461LDyOHP','toString'];_0x4e24=function(){return _0x2a8cc7;};return _0x4e24();}
