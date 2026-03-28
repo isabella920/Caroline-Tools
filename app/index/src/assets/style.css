@@ -1,0 +1,51 @@
+/* [單一職責]: 視覺氛圍定義 
+  為什麼不寫在 HTML？ 為了保持 HTML 結構純淨，方便未來更換佈景主題 (Theming)。
+*/
+
+:root {
+    --bg-gradient: radial-gradient(circle at top right, #e2e8f0, #f8fafc);
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --card-hover-bg: rgba(255, 255, 255, 0.9);
+    --card-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 工具卡片基礎樣式 */
+.tool-card {
+    transition: var(--transition-smooth);
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    text-decoration: none; /* 移除 a 標籤底線 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 懸停動態：向上浮動並增加陰影 */
+.tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow);
+    background: var(--card-hover-bg);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 針對 Lucide 圖示的微調 */
+i[data-lucide] {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* 響應式微調：確保在手機上也不擁擠 */
+@media (max-width: 640px) {
+    .tool-card {
+        padding: 1.5rem;
+    }
+}
