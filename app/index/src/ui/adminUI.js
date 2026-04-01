@@ -22,8 +22,7 @@ export function showAdminPanel() {
                         <i data-lucide="chevron-down" class="w-4 h-4 opacity-50"></i>
                     </button>
                     
-                    <div id="select-options" class="hidden absolute top-full left-0 w-full mt-2 rounded-2xl overflow-hidden z-[10000] border border-white/20 shadow-2xl animate-in slide-in-from-top-2 duration-200" 
-     style="background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);">
+<div id="select-options" class="hidden absolute top-full left-0 w-full mt-2 bg-slate-900/95 backdrop-blur-xl rounded-2xl overflow-hidden z-[10000] border border-white/20 shadow-2xl animate-in slide-in-from-top-2 duration-200">
         <div class="option-item p-3 hover:bg-white/10 cursor-pointer flex items-center gap-2" data-value="emerald">
             <span class="w-3 h-3 rounded-full bg-emerald-400"></span> 翡翠綠 (Emerald)
         </div>
