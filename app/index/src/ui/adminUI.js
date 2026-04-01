@@ -13,8 +13,8 @@ export function showAdminPanel() {
     adminModal.className = "fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-300";
     
     adminModal.innerHTML = `
-        <div class="glass-panel p-8 max-w-md w-full rounded-3xl shadow-2xl text-white animate-in zoom-in duration-300 border border-white/20">
-            <div class="flex items-center gap-3 mb-2">
+ <div id="select-options" class="hidden absolute top-full left-0 w-full mt-2 rounded-2xl overflow-hidden z-[10000] border border-white/20 shadow-2xl animate-in slide-in-from-top-2 duration-200" 
+     style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);">
                 <div class="p-2 bg-white/10 rounded-lg">
                     <i data-lucide="settings" class="w-6 h-6 text-white"></i>
                 </div>
