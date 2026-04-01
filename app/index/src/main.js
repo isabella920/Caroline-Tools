@@ -1,5 +1,4 @@
 import { renderTools, initStaticUI } from './ui/uiRender.js';
-import { renderTools } from './ui/uiRender.js';
 import { verifyAdmin } from './services/authService.js';
 import { showAdminPanel } from './ui/adminUI.js';
 
