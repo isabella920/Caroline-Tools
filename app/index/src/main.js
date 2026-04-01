@@ -1,8 +1,11 @@
+import { renderTools, initStaticUI } from './ui/uiRender.js';
 import { renderTools } from './ui/uiRender.js';
 import { verifyAdmin } from './services/authService.js';
 import { showAdminPanel } from './ui/adminUI.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // 🚀 1. 先把靜態的左側和右上角畫出來
+    initStaticUI();
     // --- 【動態讀取開始】 ---
     try {
         // 去抓你剛剛辛苦寫入的那個檔案 (加個時間戳防止瀏覽器快取舊資料)
