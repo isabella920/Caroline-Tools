@@ -1,16 +1,57 @@
-<main class="glass-container w-full max-w-6xl rounded-3xl p-6 md:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 shadow-2xl">
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可蘿嵐的小箱箱</title>
     
-    <section id="hero-container" class="lg:col-span-5"></section>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="stylesheet" href="app/index/src/assets/style.css">
 
-    <section class="lg:col-span-7 flex flex-col space-y-6">
-        <div id="nav-grid-container"></div>
+    <style>
+        /* 補上背景圖，否則白色文字在白底上會看不見 */
+        body {
+            background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        /* 確保全螢幕居中 */
+        .main-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body class="main-wrapper">
 
-        <div class="glass-panel p-6 rounded-2xl flex-1 flex flex-col relative">
-            <h2 class="text-white font-bold mb-4 flex items-center">
-                <i data-lucide="compass" class="w-5 h-5 mr-2"></i> 網站列表
-            </h2>
-            <div id="tool-gallery" class="gallery-scroll flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory hide-scrollbar"></div>
-            <div id="gallery-pagination" class="flex justify-center mt-auto pt-2 gap-2"></div>
-        </div>
-    </section>
-</main>
+    <main class="glass-container w-full max-w-6xl rounded-3xl p-6 md:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 shadow-2xl">
+        
+        <section id="hero-container" class="lg:col-span-5"></section>
+
+        <section class="lg:col-span-7 flex flex-col space-y-6">
+            <div id="nav-grid-container"></div>
+
+            <div class="glass-panel p-6 rounded-2xl flex-1 flex flex-col relative">
+                <h2 class="text-white font-bold mb-4 flex items-center">
+                    <i data-lucide="compass" class="w-5 h-5 mr-2"></i> 網站列表
+                </h2>
+                <div id="tool-gallery" class="gallery-scroll flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory hide-scrollbar">
+                    </div>
+                <div id="gallery-pagination" class="flex justify-center mt-auto pt-2 gap-2">
+                    </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="app/index/src/main.js"></script>
+
+</body>
+</html>
