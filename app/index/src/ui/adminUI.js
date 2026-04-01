@@ -22,10 +22,23 @@ export function showAdminPanel() {
                         <i data-lucide="chevron-down" class="w-4 h-4 opacity-50"></i>
                     </button>
                     
-                    <div id="select-options" class="hidden absolute top-full left-0 w-full mt-2 glass-panel rounded-2xl overflow-hidden z-[10000] border border-white/20 shadow-2xl">
-                        <div class="option-item p-3 hover:bg-white/10 cursor-pointer flex items-center gap-2" data-value="emerald"><span class="w-3 h-3 rounded-full bg-emerald-400"></span> 翡翠綠 (Emerald)</div>
-                        <div class="option-item p-3 hover:bg-white/10 cursor-pointer flex items-center gap-2" data-value="blue"><span class="w-3 h-3 rounded-full bg-blue-400"></span> 天空藍 (Blue)</div>
-                        <div class="option-item p-3 hover:bg-white/10 cursor-pointer flex items-center gap-2" data-value="purple"><span class="w-3 h-3 rounded-full bg-purple-400"></span> 丁香紫 (Purple)</div>
+                    <div id="select-options" class="hidden absolute top-full left-0 w-full mt-2 rounded-2xl overflow-hidden z-[10000] border border-white/20 shadow-2xl animate-in slide-in-from-top-2 duration-200" 
+     style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);">
+        <div class="option-item p-3 hover:bg-white/10 cursor-pointer flex items-center gap-2" data-value="emerald">
+            <span class="w-3 h-3 rounded-full bg-emerald-400"></span> 翡翠綠 (Emerald)
+        </div>
+        <div class="option-item p-3 hover:bg-white/10 cursor-pointer flex items-center gap-2" data-value="blue">
+            <span class="w-3 h-3 rounded-full bg-blue-400"></span> 天空藍 (Blue)
+        </div>
+        <div class="option-item p-3 hover:bg-white/10 cursor-pointer flex items-center gap-2" data-value="purple">
+            <span class="w-3 h-3 rounded-full bg-purple-400"></span> 丁香紫 (Purple)
+        </div>
+        <div class="option-item p-3 hover:bg-white/10 cursor-pointer flex items-center gap-2" data-value="amber">
+            <span class="w-3 h-3 rounded-full bg-amber-400"></span> 琥珀橙 (Amber)
+        </div>
+        <div class="option-item p-3 hover:bg-white/10 cursor-pointer flex items-center gap-2" data-value="rose">
+            <span class="w-3 h-3 rounded-full bg-rose-400"></span> 玫瑰紅 (Rose)
+        </div>
                     </div>
                     <input type="hidden" id="c" value="emerald">
                 </div>
