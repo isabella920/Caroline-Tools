@@ -14,7 +14,7 @@ export function renderHeroSection(containerId) {
                         <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight drop-shadow-md">
                             可蘿嵐的小箱箱
                         </h1>
-                        <p class="text-white/60 text-sm tracking-wide uppercase mt-1">Utility Toolbox</p>
+                        <p class="text-white/60 text-sm tracking-wide uppercase mt-1">Caroline's tool</p>
                     </div>
                 </div>
 
