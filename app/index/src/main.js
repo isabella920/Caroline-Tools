@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const cloudData = await response.json();
         
         // 使用雲端抓回來的資料進行渲染
-        renderTools(cloudData, 'tool-grid');
+        renderTools(cloudData, 'tool-gallery');
         console.log("✅ 成功從雲端載入最新工具卡片！");
         
     } catch (error) {
