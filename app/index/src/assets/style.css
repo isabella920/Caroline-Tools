@@ -1,51 +1,38 @@
-/* [單一職責]: 視覺氛圍定義 
-  為什麼不寫在 HTML？ 為了保持 HTML 結構純淨，方便未來更換佈景主題 (Theming)。
-*/
-
-:root {
-    --bg-gradient: radial-gradient(circle at top right, #e2e8f0, #f8fafc);
-    --card-bg: rgba(255, 255, 255, 0.7);
-    --card-hover-bg: rgba(255, 255, 255, 0.9);
-    --card-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* 基礎毛玻璃特效 */
+.glass-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-body {
-    background: var(--bg-gradient);
-    min-height: 100vh;
-    margin: 0;
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+/* 內部面板毛玻璃特效 */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* 工具卡片基礎樣式 */
-.tool-card {
-    transition: var(--transition-smooth);
-    background: var(--card-bg);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    cursor: pointer;
-    text-decoration: none; /* 移除 a 標籤底線 */
-    display: flex;
-    flex-direction: column;
+/* 隱藏滾動條但保持可滾動 */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-/* 懸停動態：向上浮動並增加陰影 */
-.tool-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--card-shadow);
-    background: var(--card-hover-bg);
-    border-color: rgba(0, 0, 0, 0.1);
+/* 膠囊分頁點基礎樣式 */
+.capsule-dot {
+    width: 12px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
 }
-
-/* 針對 Lucide 圖示的微調 */
-i[data-lucide] {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-/* 響應式微調：確保在手機上也不擁擠 */
-@media (max-width: 640px) {
-    .tool-card {
-        padding: 1.5rem;
-    }
+.capsule-dot.active {
+    width: 24px;
+    background: rgba(255, 255, 255, 0.9);
 }
