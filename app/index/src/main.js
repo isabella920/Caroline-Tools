@@ -3,8 +3,13 @@ import { verifyAdmin } from './services/authService.js';
 import { showAdminPanel } from './ui/adminUI.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 🚀 1. 先把靜態的左側和右上角畫出來
-    initStaticUI();
+    // 🚀 1. 確保容器存在後才初始化靜態 UI
+    try {
+        initStaticUI();
+        console.log("✅ 靜態組件初始化成功");
+    } catch (e) {
+        console.error("❌ 靜態組件初始化失敗，請檢查 HTML 是否有對應 ID:", e);
+    }
     // --- 【動態讀取開始】 ---
     try {
         // 去抓你剛剛辛苦寫入的那個檔案 (加個時間戳防止瀏覽器快取舊資料)
