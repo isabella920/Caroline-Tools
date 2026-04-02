@@ -1,78 +1,46 @@
-/* --- 1. 基礎重置 --- */
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100%;
-    background-color: transparent;
-}
-
-/* --- 2. 背景層控制 (這是解決手機背景失效的核心) --- */
-.fixed-background-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1; /* 位於最底層 */
-    background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #000;
-}
-
-.bg-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4); /* 調整遮罩暗度 */
-    backdrop-filter: blur(2px);
-}
-
-/* --- 3. 內容佈局控制 --- */
-.main-layout {
-    position: relative;
-    z-index: 10; /* 必須高於背景層的 z-index */
+/* --- 佈局核心 --- */
+.main-wrapper {
+    /* 讓內容在螢幕中間 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* 寬度與高度 */
     width: 100%;
     min-height: 100vh;
-    min-height: -webkit-fill-available;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent !important; /* 重要：內容層必須透明才能看到背景 */
+    min-height: -webkit-fill-available; /* 解決 iOS 網址列 */
+    
+    /* 內邊距：防止手機版內容貼邊 */
     padding: 1.5rem;
+    box-sizing: border-box;
 }
 
-.grid-container {
-    width: 100%;
-    max-width: 80rem; /* 7xl */
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 2rem;
+/* 基礎毛玻璃特效 */
+.glass-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-@media (min-width: 1024px) {
-    .grid-container {
-        grid-template-columns: repeat(12, minmax(0, 1fr));
-    }
-}
-
-/* --- 4. 玻璃擬態樣式 --- */
+/* --- 玻璃擬態優化 --- */
 .glass-panel {
-    /* 確保背景色非常透明，否則會變黑 */
-    background: rgba(255, 255, 255, 0.05) !important; 
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 1.5rem;    
-    /* 徹底移除可能導致黑框的變形屬性 */
-    transform: none !important; 
-    will-change: auto !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transform: translateZ(0);
 }
 
-/* 隱藏滾動條 */
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+/* 隱藏滾動條但保持可滾動 */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
 
 /* 膠囊分頁點基礎樣式 */
 .capsule-dot {
