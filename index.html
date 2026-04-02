@@ -8,9 +8,18 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="app/index/src/assets/style.css">
     <style>
-        /* 這裡只留最基礎的修正，其餘進 style.css */
-        body { margin: 0; background-color: #000; }
-        .bg-fixed-layer {
+        /* 基礎重置：防止手機版出現奇怪的滾動條 */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            overflow-x: hidden;
+        }
+
+        /* 固定背景層：物理釘死背景，解決手機縮放問題 */
+        .fixed-bg {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
@@ -19,21 +28,30 @@
             background-size: cover;
             background-position: center;
         }
+        .bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3); /* 遮罩暗度 */
+            backdrop-filter: blur(2px); /* 輕微模糊背景圖增加質感 */
+        }
     </style>
 </head>
 <body class="antialiased text-white">
 
-    <div class="bg-fixed-layer">
-        <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+    <div class="fixed-bg">
+        <div class="bg-overlay"></div>
     </div>
 
-    <main class="main-wrapper">
-        <div class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-10">
-            <section id="hero-container" class="lg:col-span-5 glass-panel p-8 rounded-3xl h-full flex flex-col justify-between">
+    <main class="min-h-screen w-full flex flex-col items-center justify-center p-4 md:p-10">
+        
+        <div class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+            
+            <section id="hero-container" class="lg:col-span-5 glass-panel p-8 rounded-3xl min-h-[400px] flex flex-col justify-between">
                 </section>
 
-            <section class="lg:col-span-7 flex flex-col space-y-8">
+            <section class="lg:col-span-7 flex flex-col space-y-6 lg:space-y-8">
                 <div id="nav-grid-container"></div>
+
                 <div class="glass-panel p-8 rounded-3xl flex-1 flex flex-col relative shadow-xl">
                     <h2 class="text-white text-xl font-bold mb-6 flex items-center">
                         <i data-lucide="compass" class="w-6 h-6 mr-3 text-white/70"></i> 網站列表
@@ -42,6 +60,7 @@
                         </div>
                 </div>
             </section>
+
         </div>
     </main>
 
