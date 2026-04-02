@@ -1,72 +1,78 @@
+/**
+ * app/index/src/main.js
+ * 狀態：已修復嵌套錯誤，整合分頁與管理員邏輯
+ */
 import { renderTools, initStaticUI } from './ui/uiRender.js';
 import { getPageData, getTotalPages } from './services/galleryService.js';
 import { renderCapsuleDots } from './components/CapsuleDots.js';
 import { verifyAdmin } from './services/authService.js';
 import { showAdminPanel } from './ui/adminUI.js';
 
-// 全域狀態：記錄當前頁碼與原始資料
+// 1. 全域狀態管理
 let state = {
     allTools: [],
     currentPage: 0
 };
 
-/**
- * 核心：更新畫廊畫面
- */
+// 2. 核心渲染指揮中心 (負責同步更新卡片與分頁點)
 function updateGallery() {
-    // 1. 取得當前頁面該顯示的資料 (Logic)
+    // 從 Service 取得當前頁資料
     const displayData = getPageData(state.allTools, state.currentPage);
     
-    // 2. 渲染卡片 (UI)
+    // 呼叫 UI 渲染卡片
     renderTools(displayData, 'tool-gallery');
     
-    // 3. 渲染分頁點並綁定回呼 (Component)
+    // 渲染分頁膠囊並綁定點擊事件
     const total = getTotalPages(state.allTools);
     renderCapsuleDots('gallery-pagination', total, state.currentPage, (newIndex) => {
-        state.currentPage = newIndex; // 更新狀態
-        updateGallery();              // 遞迴更新介面
+        state.currentPage = newIndex;
+        updateGallery(); // 遞迴更新
     });
 }
 
+// 3. 唯一的入口點
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. 初始化靜態 UI (Hero, Nav)
+    
+    // A. 初始化靜態組件 (Hero, Nav)
     try {
         initStaticUI();
     } catch (e) {
-        console.error("靜態初始化失敗:", e);
+        console.error("❌ 靜態初始化失敗:", e);
     }
 
-    // 2. 非同步載入資料
+    // B. 非同步載入工具資料
     try {
-        const response = await fetch(`./data/tools.json?nocache=${new Date().getTime()}`, {
+        const response = await fetch(`./data/tools.json?nocache=${Date.now()}`, {
             cache: "no-store"
         });
         if (!response.ok) throw new Error("資料庫讀取失敗");
         
         state.allTools = await response.json();
         
-        // 🚀 啟動畫廊
+        // 啟動畫廊
         updateGallery();
-        console.log("✅ 畫廊初始化完成 (3x2 佈局)");
+        console.log("✅ 畫廊與分頁系統初始化成功");
         
     } catch (error) {
         console.error("❌ 載入失敗:", error);
     }
- const trigger = document.getElementById('secret-trigger');
-    if (!trigger) return;
-    let magic = []; 
 
-    trigger.addEventListener('click', () => {
-        const now = Date.now();
-        // 每次點擊存入時間
-        magic.push(now);
-        if (magic.length > 5) magic.shift();
-        if (magic.length === (2 + 3) && (magic[4] - magic[0] < 2000)) {
-            magic = []; // 清空
-            const val = prompt("Enter Command:");
-            if (verifyAdmin(val)) {
-                showAdminPanel();
+    // C. 管理員面板觸發邏輯
+    const trigger = document.getElementById('secret-trigger');
+    if (trigger) {
+        let magic = []; 
+        trigger.addEventListener('click', () => {
+            const now = Date.now();
+            magic.push(now);
+            magic = magic.filter(t => now - t < 5000);
+            
+            if (magic.length >= 5) {
+                magic = []; // 觸發後清空
+                const val = prompt("Enter Command:");
+                if (verifyAdmin(val)) {
+                    showAdminPanel();
+                }
             }
-        }
-    });
+        });
+    }
 });
