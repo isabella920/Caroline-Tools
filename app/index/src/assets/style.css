@@ -1,36 +1,69 @@
-/* --- 玻璃擬態樣式優化 --- */
+/* --- 1. 基礎強制重置 --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    background-color: #000; /* 底色 */
+    overflow-x: hidden;
+}
+
+/* --- 2. 物理背景層 (重點：解決黑色背景問題) --- */
+.fixed-bg-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0; /* 釘在最底層 */
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                      url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    pointer-events: none; /* 確保不會擋住點擊 */
+}
+
+/* --- 3. 內容置中佈局 --- */
+.main-layout-container {
+    position: relative;
+    z-index: 10; /* 高於背景 */
+    width: 100%;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: transparent !important; /* 強制透明，否則會變黑 */
+}
+
+.content-grid {
+    width: 100%;
+    max-width: 1280px; /* 7xl */
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .content-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+
+/* --- 4. 玻璃擬態樣式 --- */
 .glass-panel {
     background: rgba(255, 255, 255, 0.1);
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    
-    /* 重要：手機端硬體加速，解決滑動掉幀 */
     transform: translateZ(0);
-    -webkit-transform: translateZ(0);
 }
 
-/* --- 隱藏滾動條 --- */
-.hide-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-.hide-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-/* --- 解決手機瀏覽器 100vh 震盪問題 --- */
-.min-h-screen {
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-}
-
-/* --- 橫向滾動優化 --- */
-.gallery-scroll {
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-}
+/* 隱藏滾動條 */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* 膠囊分頁點基礎樣式 */
 .capsule-dot {
