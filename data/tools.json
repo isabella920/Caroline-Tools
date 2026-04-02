@@ -16,14 +16,5 @@
     "icon": "paint-bucket",
     "colorTheme": "slate",
     "isReady": true
-  },
-  {
-    "id": "tool-1775108972567",
-    "name": "5",
-    "description": "5",
-    "link": "2",
-    "icon": ".",
-    "colorTheme": "blue",
-    "isReady": true
   }
 ]
