@@ -14,44 +14,49 @@
     <style>
         /* 補上背景圖 */
         body {
-            background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        
-        /* 確保全螢幕居中 */
-        .main-wrapper {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
+			margin: 0;
+			padding: 0;
+			/* 修正 iOS 滾動時的橡皮筋特效導致背景露白 */
+			background-color: #1a1a1a; 
+		}
+
+			.main-wrapper {
+			/* 核心修復：確保在手機上高度正確，且內容居中 */
+			min-height: 100vh;
+			min-height: -webkit-fill-available; /* 關鍵：解決 iOS 網址列遮擋 */
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 2rem;
+			position: relative;
+			z-index: 10; /* 確保內容在背景 div 之上 */
+			}
+
+/* 玻璃擬態優化：增加 GPU 加速，防止手機捲動時閃爍 */
+.glass-panel, .glass-container {
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    transform: translateZ(0); /* 觸發硬體加速 */
+}
     </style>
 </head>
-<body class="main-wrapper">
+<body class="antialiased">
+    <div class="fixed inset-0 -z-50 w-full h-full overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center"></div>
+        <div class="absolute inset-0 bg-black/30"></div>
+    </div>
 
-    <main class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-10">
-        
-        <section id="hero-container" class="lg:col-span-5 glass-panel p-8 rounded-3xl h-full flex flex-col justify-between"></section>
-
+    <main class="main-wrapper w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-10 mx-auto">
+        <section id="hero-container" ...></section>
         <section class="lg:col-span-7 flex flex-col space-y-8">
             <div id="nav-grid-container"></div>
-
-            <div class="glass-panel p-8 rounded-3xl flex-1 flex flex-col relative shadow-xl">
-                <h2 class="text-white text-xl font-bold mb-6 flex items-center">
-                    <i data-lucide="compass" class="w-6 h-6 mr-3 text-white/70"></i> 網站列表
-                </h2>
-                <div id="tool-gallery" class="gallery-scroll flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory hide-scrollbar">
-                    </div>
-                <div id="gallery-pagination" class="flex justify-center mt-auto pt-2 gap-2">
-                    </div>
+            <div class="glass-panel ...">
+                ...
+                <div id="tool-gallery" ...></div>
             </div>
         </section>
     </main>
 
-    <script type="module" src="app/index/src/main.js"></script>
-
+    <script src="app/index/src/main.js" type="module"></script>
 </body>
 </html>
