@@ -1,12 +1,12 @@
-/* --- 玻璃擬態 (Glassmorphism) 核心 --- */
+/* --- 玻璃擬態樣式優化 --- */
 .glass-panel {
     background: rgba(255, 255, 255, 0.1);
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     
-    /* 重要：開啟硬體加速防止手機滾動時濾鏡失效 */
+    /* 重要：手機端硬體加速，解決滑動掉幀 */
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
 }
@@ -20,14 +20,13 @@
     scrollbar-width: none;
 }
 
-/* --- 修正手機版 100vh 問題 --- */
-@supports (-webkit-touch-callout: none) {
-    .min-h-screen {
-        min-height: -webkit-fill-available;
-    }
+/* --- 解決手機瀏覽器 100vh 震盪問題 --- */
+.min-h-screen {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
 }
 
-/* --- 內容滾動區域優化 --- */
+/* --- 橫向滾動優化 --- */
 .gallery-scroll {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
