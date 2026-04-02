@@ -1,0 +1,65 @@
+/* 基礎變數：確保未來一鍵換色 */
+:root {
+  --bg-color: #f8f9fa;
+  --grid-dot: #d1d5db;
+  --block-bg: rgba(255, 255, 255, 0.8);
+  --accent: #3b82f6;
+  --radius: 24px;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-color);
+}
+
+/* 點狀網格畫布 */
+.dot-grid {
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+  background-size: 24px 24px; /* 網格間距與圓角連動 */
+  flex: 1;
+  overflow-y: auto;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  transition: width 0.3s ease; /* 切換解析度時的平滑動畫 */
+}
+
+/* 低保真區塊樣式 (Low-fi Block) */
+.vibe-block {
+  width: 100%;
+  max-width: 1200px;
+  background: var(--block-bg);
+  backdrop-filter: blur(10px); /* 磨砂玻璃 */
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.vibe-block:hover {
+  border-color: var(--accent);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.category-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+.label-text {
+  font-weight: 500;
+  color: #4b5563;
+}
