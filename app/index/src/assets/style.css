@@ -59,12 +59,17 @@ html, body {
 
 /* --- 4. 玻璃擬態樣式 --- */
 .glass-panel {
-    background: rgba(255, 255, 255, 0.1);
+    /* 確保背景色非常透明，否則會變黑 */
+    background: rgba(255, 255, 255, 0.05) !important; 
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 1.5rem;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    
+    /* 徹底移除可能導致黑框的變形屬性 */
+    transform: none !important; 
+    will-change: auto !important;
 }
 
 /* 隱藏滾動條 */
