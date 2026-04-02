@@ -4,7 +4,7 @@ html, body {
     padding: 0;
     width: 100%;
     min-height: 100%;
-    background-color: #000; /* 背景加載前的底色 */
+    background-color: transparent;
 }
 
 /* --- 2. 背景層控制 (這是解決手機背景失效的核心) --- */
@@ -19,6 +19,7 @@ html, body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-color: #000;
 }
 
 .bg-overlay {
