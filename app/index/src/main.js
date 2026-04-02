@@ -70,36 +70,3 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 });
-
-
-
-import { renderTools, initStaticUI } from './ui/uiRender.js';
-
-
-document.addEventListener('DOMContentLoaded', async () => {
-    // 🚀 1. 確保容器存在後才初始化靜態 UI
-    try {
-        initStaticUI();
-        console.log("✅ 靜態組件初始化成功");
-    } catch (e) {
-        console.error("❌ 靜態組件初始化失敗，請檢查 HTML 是否有對應 ID:", e);
-    }
-    // --- 【動態讀取開始】 ---
-    try {
-        // 去抓你剛剛辛苦寫入的那個檔案 (加個時間戳防止瀏覽器快取舊資料)
-        const response = await fetch(`./data/tools.json?nocache=${new Date().getTime()}`, {
-    cache: "no-store" // 告訴瀏覽器不要存這份資料
-});
-        if (!response.ok) throw new Error("找不到資料庫");
-        
-        const cloudData = await response.json();
-        
-        // 使用雲端抓回來的資料進行渲染
-        renderTools(cloudData, 'tool-gallery');
-        console.log("✅ 成功從雲端載入最新工具卡片！");
-        
-    } catch (error) {
-        console.error("❌ 讀取失敗，改用本地備份：", error);
-        // 如果雲端抓失敗，可以考慮放個備份或提示
-    }
-   
