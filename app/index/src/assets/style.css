@@ -39,7 +39,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent; /* 重要：內容層必須透明才能看到背景 */
+    background-color: transparent !important; /* 重要：內容層必須透明才能看到背景 */
     padding: 1.5rem;
 }
 
