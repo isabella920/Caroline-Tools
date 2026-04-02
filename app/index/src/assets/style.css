@@ -1,3 +1,20 @@
+/* --- 佈局核心 --- */
+.main-wrapper {
+    /* 讓內容在螢幕中間 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* 寬度與高度 */
+    width: 100%;
+    min-height: 100vh;
+    min-height: -webkit-fill-available; /* 解決 iOS 網址列 */
+    
+    /* 內邊距：防止手機版內容貼邊 */
+    padding: 1.5rem;
+    box-sizing: border-box;
+}
+
 /* 基礎毛玻璃特效 */
 .glass-container {
     background: rgba(255, 255, 255, 0.1);
@@ -6,13 +23,14 @@
     border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* 內部面板毛玻璃特效 */
+/* --- 玻璃擬態優化 --- */
 .glass-panel {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transform: translateZ(0);
 }
 
 /* 隱藏滾動條但保持可滾動 */
