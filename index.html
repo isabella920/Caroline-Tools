@@ -8,40 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="app/index/src/assets/style.css">
-
-    <style>
-        /* 1. 物理背景層：釘死在螢幕最底層，解決手機版背景失效 */
-        .fixed-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-color: #000;
-        }
-
-        /* 2. 背景遮罩：增加玻璃感 */
-        .bg-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(2px);
-        }
-
-        /* 3. 解決 iOS 滾動條露白問題 */
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            min-height: 100%;
-            background-color: transparent;
-        }
-    </style>
 </head>
 <body class="antialiased text-white">
 
