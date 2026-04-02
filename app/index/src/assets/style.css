@@ -1,53 +1,59 @@
-/* --- 1. 基礎強制重置 --- */
+/* --- 1. 基礎重置 --- */
 html, body {
     margin: 0;
     padding: 0;
     width: 100%;
     min-height: 100%;
-    background-color: #000; /* 底色 */
-    overflow-x: hidden;
+    background-color: #000; /* 背景加載前的底色 */
 }
 
-/* --- 2. 物理背景層 (重點：解決黑色背景問題) --- */
-.fixed-bg-layer {
+/* --- 2. 背景層控制 (這是解決手機背景失效的核心) --- */
+.fixed-background-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 0; /* 釘在最底層 */
-    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
-                      url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop');
+    z-index: 1; /* 位於最底層 */
+    background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    pointer-events: none; /* 確保不會擋住點擊 */
 }
 
-/* --- 3. 內容置中佈局 --- */
-.main-layout-container {
+.bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4); /* 調整遮罩暗度 */
+    backdrop-filter: blur(2px);
+}
+
+/* --- 3. 內容佈局控制 --- */
+.main-layout {
     position: relative;
-    z-index: 10; /* 高於背景 */
+    z-index: 10; /* 必須高於背景層的 z-index */
     width: 100%;
     min-height: 100vh;
     min-height: -webkit-fill-available;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: transparent; /* 重要：內容層必須透明才能看到背景 */
     padding: 1.5rem;
-    background: transparent !important; /* 強制透明，否則會變黑 */
 }
 
-.content-grid {
+.grid-container {
     width: 100%;
-    max-width: 1280px; /* 7xl */
+    max-width: 80rem; /* 7xl */
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
     gap: 2rem;
 }
 
 @media (min-width: 1024px) {
-    .content-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .grid-container {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
 }
 
 /* --- 4. 玻璃擬態樣式 --- */
@@ -58,7 +64,7 @@ html, body {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 1.5rem;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    transform: translateZ(0);
+    transform: translateZ(0); /* 硬體加速 */
 }
 
 /* 隱藏滾動條 */
