@@ -19,7 +19,7 @@ export function renderHeroSection(containerId) {
                 </div>
 
                 <p class="text-white/80 text-lg ml-2 border-l-2 border-white/20 pl-4">
-                    存活於互聯網邊緣的實用小站
+                    存活於網路邊緣的實用小站
                 </p>
             </div>
 
