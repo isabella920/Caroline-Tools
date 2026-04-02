@@ -14,19 +14,20 @@ export function renderTools(tools, containerId) {
     if (!container) return;
 
     // 依照草圖：卡片應填滿 Grid 格子，不再使用固定寬度
-    const toolsHTML = tools.map(tool => `
-        <a href="${tool.link}" target="_blank" class="glass-panel p-5 rounded-2xl flex flex-col hover:bg-white/10 transition-all duration-300 group hover:-translate-y-1">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="p-2 bg-white/10 rounded-xl text-white group-hover:scale-110 transition-transform">
-                    <i data-lucide="${tool.icon || 'box'}" class="w-5 h-5"></i>
-                </div>
-                <h2 class="text-lg font-bold text-white truncate">${tool.name}</h2>
+const toolsHTML = tools.map(tool => `
+    <a href="${tool.link}" target="_blank" 
+       class="glass-panel p-5 rounded-2xl flex flex-col hover:bg-white/10 transition-all duration-300 group hover:-translate-y-1 h-fit min-h-[160px]">
+        <div class="flex items-center gap-3 mb-3">
+            <div class="p-2 bg-white/10 rounded-xl text-white group-hover:scale-110 transition-transform">
+                <i data-lucide="${tool.icon || 'box'}" class="w-5 h-5"></i>
             </div>
-            <p class="text-sm text-white/70 flex-1 line-clamp-2">
-                ${tool.description}
-            </p>
-        </a>
-    `).join('');
+            <h2 class="text-lg font-bold text-white truncate">${tool.name}</h2>
+        </div>
+        <p class="text-sm text-white/70 line-clamp-2">
+            ${tool.description}
+        </p>
+    </a>
+`).join('');
 
     container.innerHTML = toolsHTML;
 
