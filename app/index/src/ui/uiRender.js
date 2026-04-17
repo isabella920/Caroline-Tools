@@ -27,7 +27,7 @@ const toolsHTML = tools.map(tool => `
             </h2>
         </div>
 
-        <p class="text-sm text-white/70 line-clamp-3 text-Pretty">
+        <p class="text-sm text-white/70 line-clamp-3 text-Pretty text-justify [text-justify:inter-ideograph]">
             ${tool.description}
         </p>
     </a>
