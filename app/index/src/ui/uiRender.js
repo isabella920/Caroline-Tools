@@ -27,7 +27,7 @@ const toolsHTML = tools.map(tool => `
             </h2>
         </div>
 
-        <p class="text-sm text-white/70 line-clamp-3 "style="text-wrap: balance;">
+        <p class="text-sm text-white/70 line-clamp-3 "style="text-wrap: Pretty;">
             ${tool.description}
         </p>
     </a>
